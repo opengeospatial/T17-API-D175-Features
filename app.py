@@ -5,7 +5,7 @@ from helpers import get_useful_links, get_api_name
 from flask import Flask, render_template, request, url_for
 app = Flask(__name__)
 
-API_BASE_URL = 'https://fgjson.skymantics.com/'
+API_BASE_URL = 'https://test.cubewerx.com/cubewerx/cubeserv/demo/ogcapi/Foundation/'
 
 API_NAME = get_api_name(API_BASE_URL)
 USEFUL_LINKS = get_useful_links(API_BASE_URL)

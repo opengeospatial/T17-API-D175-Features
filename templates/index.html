@@ -239,7 +239,7 @@
 
                 }
                 $.getJSON($SCRIPT_ROOT + '/collections/' +collId+ '/items/', {
-                    // collectionId: collId,
+                    collectionId: collId,
                     l: limit,
                     bbox: bboxVal,
                 }, function(data) {
@@ -431,8 +431,8 @@
 
                 }
                 $.getJSON($SCRIPT_ROOT + '/collections/' +collId+ '/items/'+itemId, {
-                    // collectionId: collId,
-                    // itemId: itemId,
+                    collectionId: collId,
+                    itemId: itemId,
                     bbox: bboxVal,
                 }, function(data) {
                     /** @function showJSONOutput */

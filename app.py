@@ -1,5 +1,6 @@
 import json
 import requests
+from pprint import pprint
 
 from flask import Flask, jsonify, render_template, request, url_for
 app = Flask(__name__)
@@ -35,7 +36,7 @@ def index():
 
 
 @app.route('/collections/<collectionId>/items/', defaults={
-    'bbox': DEFAULT_BBOX, # London  bbox by default
+    'bbox': DEFAULT_BBOX,
     'collectionId': DEFAULT_COLLECTION_ID,
     'l': DEFAULT_LIMIT
 })
@@ -50,8 +51,13 @@ def get_features(collectionId, l, bbox):
     else:
         limitArg = request.args.get('l')
 
+    if (request.args.get('collectionId') == '' or request.args.get('collectionId') == None):
+        collectionIdArg = collectionId
+    else:
+        collectionIdArg = request.args.get('collectionId')
+
     # Get the collection ID
-    collection_id = collectionId
+    collection_id = collectionIdArg
     # Set the API resource url
     URL = API_BASE_URL+"/collections/"+collection_id+"/items"
     f = "json" # str | A MIME type indicating the representation of the resources to be presented (e.g. application/gml+xml; version=3.2 for GML 3.2). (optional)
@@ -78,21 +84,26 @@ def get_features(collectionId, l, bbox):
     'collectionId': DEFAULT_COLLECTION_ID,
     'itemId': DEFAULT_ELEMENT_ID,
 })
-def get_feature(collectionId, itemId, l, bbox):
+def get_feature(collectionId, itemId, bbox):
     if (request.args.get('bbox') == '' or request.args.get('bbox') == None):
         bboxArg = bbox
     else:
         bboxArg = request.args.get('bbox')
 
-    if (request.args.get('l') == '' or request.args.get('l') == None):
-        limitArg = l
+    if (request.args.get('itemId') == '' or request.args.get('itemId') == None):
+        itemIdArg = itemId
     else:
-        limitArg = request.args.get('l')
+        itemIdArg = request.args.get('itemId')
+
+    if (request.args.get('collectionId') == '' or request.args.get('collectionId') == None):
+        collectionIdArg = collectionId
+    else:
+        collectionIdArg = request.args.get('collectionId')
 
     # Get the collection ID
-    collection_id = collectionId
+    collection_id = collectionIdArg
     # get the item ID
-    item_id = itemId
+    item_id = itemIdArg
     # bbox = [3.4] # list[float] | Only features that have a geometry that intersects the bounding box are selected. The bounding box is provided as four or six numbers, depending on whether the coordinate reference system includes a vertical axis (elevation or depth): * Lower left corner, coordinate axis 1 * Lower left corner, coordinate axis 2 * Lower left corner, coordinate axis 3 (optional) * Upper right corner, coordinate axis 1 * Upper right corner, coordinate axis 2 * Upper right corner, coordinate axis 3 (optional) The coordinate reference system of the values is WGS84 longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84) unless a different coordinate reference system is specified in the parameter `bbox-crs`. For WGS84 longitude/latitude the values are in most cases the sequence of minimum longitude, minimum latitude, maximum longitude and maximum latitude. However, in cases where the box spans the antimeridian the first value (west-most box edge) is larger than the third value (east-most box edge). If a feature has multiple spatial geometry properties, it is the decision of the server whether only a single spatial geometry property is used to determine the extent or all relevant geometries. (optional)
     # Set the API resource url
     URL = API_BASE_URL+"/collections/"+collection_id+"/items/"+item_id

@@ -1,24 +1,19 @@
 import json
 import requests
-from pprint import pprint
+from helpers import get_useful_links, get_api_name
 
-from flask import Flask, jsonify, render_template, request, url_for
+from flask import Flask, render_template, request, url_for
 app = Flask(__name__)
 
-API_BASE_URL = 'https://test.cubewerx.com/cubewerx/cubeserv/demo/ogcapi/Foundation/'
-API_NAME = "Foundation"
+API_BASE_URL = 'https://fgjson.skymantics.com/'
+
+API_NAME = get_api_name(API_BASE_URL)
+USEFUL_LINKS = get_useful_links(API_BASE_URL)
 DEFAULT_LIMIT = 20
 DEFAULT_COLLECTION_ID = "" # I.e. "aerofacp_1m"
 DEFAULT_BBOX = "" # I.e. "-0.489,51.28,0.236,51.686" # LONDON
 DEFAULT_ELEMENT_ID = "" # I.e.  "CWFID.AEROFACP_1M.5212.5610.7AEB8DB2246327DC1F20020000" # HEATHROW
 
-# OGC API useful links
-useful_links = [
-    (API_BASE_URL+'?f=json','Landing page'),
-    (API_BASE_URL+'api?f=json','Api definition'),
-    (API_BASE_URL+'conformance?f=json','Conformance classes'),
-    (API_BASE_URL+'collections?f=json','Collections'),
-]
 
 @app.route('/')
 def index():
@@ -27,13 +22,12 @@ def index():
         request.root_url = url_for('index', _external=True)
     return render_template(
         'index.html', 
-        links=useful_links, 
+        links=USEFUL_LINKS, 
         name=API_NAME,
         default_collection_id=DEFAULT_COLLECTION_ID,
         default_bbox=DEFAULT_BBOX,
         default_element_id=DEFAULT_ELEMENT_ID
     )
-
 
 @app.route('/collections/<collectionId>/items/', defaults={
     'bbox': DEFAULT_BBOX,
@@ -73,6 +67,12 @@ def get_features(collectionId, l, bbox):
     api_response = requests.get(url = URL, params = PARAMS)
     # extracting data in json format
     json_api_response = api_response.json()
+    # Looking for exceptions
+    if ('code' in json_api_response and json_api_response['code'] == "InvalidParameterValue"):
+        return json.dumps(['error', json_api_response['description']])
+    if ('code' in json_api_response and json_api_response['code'] == "NotFound"):
+        return json.dumps(['error', json_api_response['description']])
+    # Get features 
     json_fearures_list = json_api_response["features"]
     # Parsing to string
     features_list = json.dumps(json_fearures_list)
@@ -118,6 +118,13 @@ def get_feature(collectionId, itemId, bbox):
     api_response = requests.get(url = URL, params = PARAMS)
     # extracting data in json format
     json_api_response = api_response.json()
+    # Looking for exceptions
+    if ('code' in json_api_response and json_api_response['code'] == "InvalidParameterValue"):
+        return json.dumps(['error', json_api_response['description']])
+    if ('code' in json_api_response and json_api_response['code'] == "NotFound"):
+        return json.dumps(['error', json_api_response['description']])
+    if ('code' in json_api_response and json_api_response['code'] == "error"):
+        return json.dumps(['error', json_api_response['description']])
     # Parsing to string
     features_item = json.dumps(json_api_response)
     # Returning string

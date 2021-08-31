@@ -173,14 +173,12 @@
             </div>
         </div>
 
-
         <footer>
             <hr>
             <p class="text-center">
                 2021
             </p>
         </footer>
-
 
         <!-- Document root -->
         <script>
@@ -243,17 +241,25 @@
                     l: limit,
                     bbox: bboxVal,
                 }, function(data) {
-                    /** @function showJSONOutput */
-                    showJSONOutput(data, "#result-items");
-                    /** @function saveObjects */
-                    saveObjects(data);
-                    /** @function renderObjects */
-                    renderObjects();
-                    return data;
+                    if (data[0] == "error") {
+                        alert(data[1]);
+                        $this.html($this.data('original-text'));
+                        $this.removeAttr('disabled');
+                    } else {
+                        /** @function showJSONOutput */
+                        showJSONOutput(data, "#result-items");
+                        /** @function saveObjects */
+                        saveObjects(data);
+                        /** @function renderObjects */
+                        renderObjects();
+                        return data;
+                    }
                 }).done(function (data) {
-                    $this.html($this.data('original-text'));
-                    $this.removeAttr('disabled');
-                    $('#collentionItemsJsonOutput').removeAttr('disabled');
+                    if (data[0] !== "error") {
+                        $this.html($this.data('original-text'));
+                        $this.removeAttr('disabled');
+                        $('#collentionItemsJsonOutput').removeAttr('disabled');
+                    }
                 }).fail(function() {
                     $this.html($this.data('original-text'));
                     $this.removeAttr('disabled');
@@ -435,17 +441,23 @@
                     itemId: itemId,
                     bbox: bboxVal,
                 }, function(data) {
-                    /** @function showJSONOutput */
-                    showJSONOutput(data, "#result-item");
-                    /** @function saveObjects */
-                    saveObject(data);
-                    /** @function renderObjects */
-                    renderObjects();
-                    return data;
+                    if (data[0] == "error") {
+                        alert(data[1]);
+                    } else {
+                        /** @function showJSONOutput */
+                        showJSONOutput(data, "#result-item");
+                        /** @function saveObjects */
+                        saveObject(data);
+                        /** @function renderObjects */
+                        renderObjects();
+                        return data;
+                    }
                 }).done(function (data) {
-                    $this.html($this.data('original-text'));
-                    $this.removeAttr('disabled');
-                    $('#collentionItemJsonOutput').removeAttr('disabled');
+                    if (data[0] !== "error") {
+                        $this.html($this.data('original-text'));
+                        $this.removeAttr('disabled');
+                        $('#collentionItemJsonOutput').removeAttr('disabled');
+                    }
                 }).fail(function() {
                     $this.html($this.data('original-text'));
                     $this.removeAttr('disabled');

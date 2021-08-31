@@ -66,20 +66,20 @@
                             <div class="card-body">
                                 <div class="row form-group">
                                     <div class="col-12">
-                                        <label for="collectionId">Feature collection ID</label>
-                                        <input type="text" name="collectionId" id="collectionId" class="form-control" value="" placeholder="AgricultureSrf">
+                                        <label for="collectionId">Feature collection ID*</label>
+                                        <input type="text" name="collectionId" required id="collectionId" class="form-control" value="" placeholder="{{default_collection_id}}">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-12">
                                         <label for="collectionId">N. of elements</label> <small>20 by default</small>
-                                        <input type="text" name="limit" id="limit" class="form-control" value="20" placeholder="20">
+                                        <input type="text" name="limit" id="limit" required class="form-control" value="20" placeholder="20">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-12">
                                         <label for="collectionBbox">Bbox</label>
-                                        <input ype="text" name="collectionBbox" id="collectionBbox" class="form-control" value="" placeholder="-0.489,51.28,0.236,51.686">
+                                        <input ype="text" name="collectionBbox" id="collectionBbox" class="form-control" value="" placeholder="{{default_bbox}}">
                                     </div>
                                 </div>
                             </div>
@@ -98,20 +98,20 @@
                         <div class="card-body">
                             <div class="row form-group">
                                 <div class="col-12">
-                                    <label for="collectionIdFilter">Feature collection ID</label>
-                                    <input type="text" name="collectionIdFilter" id="collectionIdFilter" class="form-control" value="" placeholder="aerofacp_1m">
+                                    <label for="collectionIdFilter">Feature collection ID*</label>
+                                    <input type="text" name="collectionIdFilter" required id="collectionIdFilter" class="form-control" value="" placeholder="{{default_collection_id}}">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <div class="col-12">
-                                    <label for="elementId">Element ID</label>
-                                    <input ype="text" name="elementId" id="elementId" class="form-control" value="" placeholder="CWFID.AEROFACP_1M.0.0.1009C50A276905DE1F20020000">
+                                    <label for="elementId">Element ID*</label>
+                                    <input ype="text" name="elementId" required id="elementId" class="form-control" value="" placeholder="{{default_element_id}}">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <div class="col-12">
                                     <label for="elementBbox">Bbox</label>
-                                    <input ype="text" name="elementBbox" id="elementBbox" class="form-control" value="" placeholder="-0.489,51.28,0.236,51.686">
+                                    <input ype="text" name="elementBbox" id="elementBbox" class="form-control" value="" placeholder="{{default_bbox}}">
                                 </div>
                             </div>
                         </div>
@@ -220,6 +220,13 @@
              */
             function getCollectionItemsList(){
                 var collId = $('input[name="collectionId"]').val();
+                if (collId.length == 0) {
+                    $('input[name="collectionId"]').addClass('border-danger')
+                    $('input[name="collectionId"]').on('input', function(){
+                        $(this).removeClass('border-danger')
+                    });
+                    return false;
+                }
                 var limit = $('input[name="limit"]').val();
                 var bboxVal = $('#collectionBbox').val();
 
@@ -231,7 +238,6 @@
                     $this.prop('disabled', true);
 
                 }
-                console.log(bboxVal);
                 $.getJSON($SCRIPT_ROOT + '/collections/' +collId+ '/items/', {
                     // collectionId: collId,
                     l: limit,
@@ -251,6 +257,7 @@
                 }).fail(function() {
                     $this.html($this.data('original-text'));
                     $this.removeAttr('disabled');
+                    alert('Error');
                 });
 
                 return false;
@@ -398,7 +405,22 @@
              */
             function getCollectionItem(){
                 var collId = $('input[name="collectionIdFilter"]').val();
+                if (collId.length == 0) {
+                    $('input[name="collectionIdFilter"]').addClass('border-danger')
+                    $('input[name="collectionIdFilter"]').on('input', function(){
+                        $(this).removeClass('border-danger')
+                    });
+                    return false;
+                }
                 var itemId = $('input[name="elementId"]').val();
+                if (itemId.length == 0) {
+                    $('input[name="elementId"]').addClass('border-danger')
+                    $('input[name="elementId"]').on('input', function(){
+                        $(this).removeClass('border-danger')
+                    });
+                    return false;
+                }
+                var bboxVal = $('#elementBbox').val();
 
                 var $this = $(this);
                 var loadingText = '<i class="fa fa-circle-o-notch fa-spin"></i> Loading...';
@@ -408,10 +430,10 @@
                     $this.prop('disabled', true);
 
                 }
-     
                 $.getJSON($SCRIPT_ROOT + '/collections/' +collId+ '/items/'+itemId, {
-                    collectionId: collId,
-                    itemId: itemId,
+                    // collectionId: collId,
+                    // itemId: itemId,
+                    bbox: bboxVal,
                 }, function(data) {
                     /** @function showJSONOutput */
                     showJSONOutput(data, "#result-item");
@@ -427,6 +449,7 @@
                 }).fail(function() {
                     $this.html($this.data('original-text'));
                     $this.removeAttr('disabled');
+                    alert('Error');
                 });
 
                 return false;
@@ -438,6 +461,7 @@
              * @returns {void}
              */
             function saveObject(element) {
+                console.log(element);
                 var data = element;
                 switch (data.geometry.type) {
                         case "Polygon":

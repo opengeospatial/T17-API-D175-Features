@@ -14,7 +14,7 @@ DEFAULT_LIMIT = 20
 DEFAULT_COLLECTION_ID = "" # I.e. "aerofacp_1m"
 DEFAULT_BBOX = "" # I.e. "-0.489,51.28,0.236,51.686" # LONDON
 DEFAULT_ELEMENT_ID = "" # I.e.  "CWFID.AEROFACP_1M.5212.5610.7AEB8DB2246327DC1F20020000" # HEATHROW
-
+TILESERVER_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
 
 @app.route('/')
 def index():

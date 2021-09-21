@@ -59,13 +59,13 @@
                             {% for url,printable_name in links %}
                                 <div class="row form-group">
                                     <div class="col-12">
-                                        <a href="{{url}}" class="btn btn-primary btn-block" target="_blank">{{printable_name}}</a>
+                                        <a href="{{url}}" class="btn btn-primary btn-block useful-link" target="_blank">{{printable_name}}</a>
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
                         <div class="card-footer text-muted">
-                            <button disabled id="" type="button" disabled class="btn btn-primary" data-toggle="modal" data-target="#">Show JSON output</button>
+                            <button disabled id="usefulLinksModalButton" type="button" disabled class="btn btn-primary" data-toggle="modal" data-target="#usefulLinksModal">Show JSON output</button>
                         </div>
                     </div>
                 </div>
@@ -140,6 +140,29 @@
             </div>
         </div>
 
+        <!-- #usefulLinksModal -->
+        <div class="modal fade" id="usefulLinksModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">JSON output</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <pre id="result-link-items"></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+        </div>
 
         <!-- #getCollectionItemsModal -->
         <div class="modal fade" id="getCollectionItemsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -592,17 +615,70 @@
             }
         </script>
 
+        <!-- Map JS -->
         <script>
-        // Set map center and block zoom
-      	var map = L.map('mapid', {
-            scrollWheelZoom: false,
-          }).setView([41.651454948560136, -0.8817493915557862], 4);
-		// Get map tiles from localhost or OSM
-		// L.tileLayer('http://3.143.92.80/tileserver/{z}/{x}/{y}.png', {
-		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			maxZoom: 19,
-			attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors and <a href="https://novadevs.com">Novadevs</a>'
-		}).addTo(map);
+            // Set map center and block zoom
+            var map = L.map('mapid', {
+                scrollWheelZoom: false,
+            }).setView([41.651454948560136, -0.8817493915557862], 4);
+            // Get map tiles from localhost or OSM
+            // L.tileLayer('http://3.143.92.80/tileserver/{z}/{x}/{y}.png', {
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors and <a href="https://novadevs.com">Novadevs</a>'
+            }).addTo(map);
+        </script>
+
+        <!-- Useful links JS -->
+        <script>
+            $('.useful-link').each(function(link) {
+                $( this ).on('click', loadLinkJson);
+            });
+
+            function loadLinkJson(e) {
+                e.preventDefault();
+                var $this = $(this);
+                var loadingText = '<i class="fa fa-circle-o-notch fa-spin"></i> Loading...';
+                if ($(this).html() !== loadingText) {
+                    $this.data('original-text', $(this).html());
+                    $this.html(loadingText);
+                    $this.prop('disabled', true);
+
+                }
+                $.getJSON(this.href, {}, function(data) {
+                    if (data[0] == "error") {
+                        alert(data[1]);
+                        $this.html($this.data('original-text'));
+                        $this.removeAttr('disabled');
+                    } else {
+                        /** @function showJSONOutputAuto */
+                        showJSONOutputAuto(data, "#result-link-items", "#usefulLinksModal");
+                        return data;
+                    }
+                }).done(function (data) {
+                    if (data[0] !== "error") {
+                        $this.html($this.data('original-text'));
+                        $this.removeAttr('disabled');
+                        $('#usefulLinksModalButton').removeAttr('disabled');
+                    }
+                }).fail(function() {
+                    $this.html($this.data('original-text'));
+                    $this.removeAttr('disabled');
+                    alert('Error');
+                });
+            }
+
+            /** @function showJSONOutputAuto 
+             * Returns and puts the given JSON response into a modal window
+             * 
+             * @returns {void}
+             */
+             function showJSONOutputAuto(data, target, modal) {
+                // Put beautified json
+                $(modal).text(data.id)
+                $(target).empty().simpleJson({ jsonObject: data });
+                $(modal).modal()
+            }
         </script>
     </body>
 </html>

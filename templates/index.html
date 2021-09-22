@@ -634,7 +634,8 @@
             }).setView([41.651454948560136, -0.8817493915557862], 4);
             // Get map tiles from localhost or OSM
             // L.tileLayer('http://3.143.92.80/tileserver/{z}/{x}/{y}.png', {
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            var tilesFrom = "{{tileserver}}"
+            L.tileLayer(tilesFrom, {
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors and <a href="https://novadevs.com">Novadevs</a>'
             }).addTo(map);

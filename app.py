@@ -27,7 +27,8 @@ def index():
         name=API_NAME,
         default_collection_id=DEFAULT_COLLECTION_ID,
         default_bbox=DEFAULT_BBOX,
-        default_element_id=DEFAULT_ELEMENT_ID
+        default_element_id=DEFAULT_ELEMENT_ID,
+        tileserver=TILESERVER_URL
     )
 
 @app.route('/collections/<collectionId>/items/', defaults={

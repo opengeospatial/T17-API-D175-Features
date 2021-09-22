@@ -57,9 +57,21 @@ def get_features(collectionId, l, bbox):
         'f':f,
         'limit':limitParam,
     }
-    # Queriables
+
+    # Accepted queriables:
+    # bbox list[float] | Only features that have a geometry that intersects the bounding box are selected. The bounding box is provided as four or six numbers, depending on whether the coordinate reference system includes a vertical axis (elevation or depth): * Lower left corner, coordinate axis 1 * Lower left corner, coordinate axis 2 * Lower left corner, coordinate axis 3 (optional) * Upper right corner, coordinate axis 1 * Upper right corner, coordinate axis 2 * Upper right corner, coordinate axis 3 (optional) The coordinate reference system of the values is WGS84 longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84) unless a different coordinate reference system is specified in the parameter `bbox-crs`. For WGS84 longitude/latitude the values are in most cases the sequence of minimum longitude, minimum latitude, maximum longitude and maximum latitude. However, in cases where the box spans the antimeridian the first value (west-most box edge) is larger than the third value (east-most box edge). If a feature has multiple spatial geometry properties, it is the decision of the server whether only a single spatial geometry property is used to determine the extent or all relevant geometries. (optional)
+    # property_name = 'property_name_example' # str | A list of feature properties to include in the response.  For some output formats, such as XML that can be validate against a formal schema, this list represents the optional properties to include in the response. (optional)
+    # crs = 'http://www.opengis.net/def/crs/epsg/0/4326' # str | Asserts the CRS to use for encoding features in the response document. (optional)
+    # lat = 3.4 # float | The latitude of the center point of a proximity search. (optional)
+    # lon = 3.4 # float | The longitude of the center point of a proximity search. (optional)
+    # radius = 3.4 # float | The search radius in meters of a proximity search. (optional)
     if (request.args.get('bbox') != '' and request.args.get('bbox') != None):
-        PARAMS['bbox'] = request.args.get('bbox') # list[float] | Only features that have a geometry that intersects the bounding box are selected. The bounding box is provided as four or six numbers, depending on whether the coordinate reference system includes a vertical axis (elevation or depth): * Lower left corner, coordinate axis 1 * Lower left corner, coordinate axis 2 * Lower left corner, coordinate axis 3 (optional) * Upper right corner, coordinate axis 1 * Upper right corner, coordinate axis 2 * Upper right corner, coordinate axis 3 (optional) The coordinate reference system of the values is WGS84 longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84) unless a different coordinate reference system is specified in the parameter `bbox-crs`. For WGS84 longitude/latitude the values are in most cases the sequence of minimum longitude, minimum latitude, maximum longitude and maximum latitude. However, in cases where the box spans the antimeridian the first value (west-most box edge) is larger than the third value (east-most box edge). If a feature has multiple spatial geometry properties, it is the decision of the server whether only a single spatial geometry property is used to determine the extent or all relevant geometries. (optional)
+        PARAMS['bbox'] = request.args.get('bbox') 
+    if (request.args.get('queryableName') != '' and request.args.get('queryableName') != None and request.args.get('queryableValue') != '' and request.args.get('queryableValue')):
+        # PARAMS[request.args.get('queryableName')] = request.args.get('queryableValue')
+        name = request.args.get('queryableName')
+        value = request.args.get('queryableValue')
+        PARAMS[name] = value
 
     # sending get request and saving the response as response object
     api_response = requests.get(url = URL, params = PARAMS)

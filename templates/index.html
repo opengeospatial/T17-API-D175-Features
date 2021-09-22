@@ -50,6 +50,7 @@
             </div>
 
             <div class="row">
+                <!-- links -->
                 <div class="col-4 d-flex align-items-stretch">
                     <div class="card w-100">
                         <div class="card-header">
@@ -69,7 +70,7 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- collections -->
                 <div class="col-4  d-flex align-items-stretch">
                         <div class="card  w-100">
                             <div class="card-header">
@@ -97,7 +98,15 @@
                                 <div class="row form-group">
                                     <div class="col-6">
                                         <label for="queryableName">Queriable</label>
-                                        <input ype="text" name="queryableName" id="queryableName" class="form-control" value="" placeholder="">
+                                        <!-- <input type="text" name="queryableName" id="queryableName" class="form-control" value="" placeholder=""> -->
+                                        <select name="queryableName" id="queryableName" class="form-control">
+                                            <option value=""></option>
+                                            <option value="properties">Property name</option>
+                                            <option value="crs">CRS</option>
+                                            <option value="lat">Latitude</option>
+                                            <option value="lon">Longitude</option>
+                                            <option value="radius">Radius</option>
+                                        </select>
                                     </div>
                                     <div class="col-6">
                                         <label for="queryableValue">Queriable value</label>
@@ -111,7 +120,7 @@
                             </div>
                         </div>
                 </div>
-
+                <!-- item -->
                 <div class="col-4  d-flex align-items-stretch">
                     <div class="card  w-100">
                         <div class="card-header">
@@ -279,6 +288,8 @@
                     collectionId: collId,
                     l: limit,
                     bbox: bboxVal,
+                    queryableName: $('select[name="queryableName"]').children("option:selected").val(),
+                    queryableValue: $('input[name="queryableValue"]').val(),
                 }, function(data) {
                     if (data[0] == "error") {
                         alert(data[1]);

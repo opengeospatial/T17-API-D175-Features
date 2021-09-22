@@ -70,7 +70,8 @@ div.simpleJson li.simpleJson-collapsed > span.simpleJson-collapsibleMarker, div.
 
 
 #result-items,
-#result-item { 
+#result-item,
+#result-link-items { 
     white-space: pre; 
     font-family: monospace; 
     background-color: #063596;

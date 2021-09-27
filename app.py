@@ -6,7 +6,7 @@ from helpers import get_useful_links, get_api_name
 from flask import Flask, render_template, request, url_for
 app = Flask(__name__)
 
-API_BASE_URL = 'https://test.cubewerx.com/cubewerx/cubeserv/demo/ogcapi/Daraa'
+API_BASE_URL = 'http://3.140.17.13:5000/'
 
 API_NAME = get_api_name(API_BASE_URL)
 USEFUL_LINKS = get_useful_links(API_BASE_URL)

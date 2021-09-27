@@ -98,15 +98,15 @@
                                 <div class="row form-group">
                                     <div class="col-6">
                                         <label for="queryableName">Queriable</label>
-                                        <!-- <input type="text" name="queryableName" id="queryableName" class="form-control" value="" placeholder=""> -->
-                                        <select name="queryableName" id="queryableName" class="form-control">
+                                        <input type="text" name="queryableName" id="queryableName" class="form-control" value="" placeholder="">
+                                        <!-- <select name="queryableName" id="queryableName" class="form-control">
                                             <option value=""></option>
                                             <option value="properties">Property name</option>
                                             <option value="crs">CRS</option>
                                             <option value="lat">Latitude</option>
                                             <option value="lon">Longitude</option>
                                             <option value="radius">Radius</option>
-                                        </select>
+                                        </select> -->
                                     </div>
                                     <div class="col-6">
                                         <label for="queryableValue">Queriable value</label>
@@ -288,7 +288,7 @@
                     collectionId: collId,
                     l: limit,
                     bbox: bboxVal,
-                    queryableName: $('select[name="queryableName"]').children("option:selected").val(),
+                    queryableName: $('input[name="queryableName"]').val(),
                     queryableValue: $('input[name="queryableValue"]').val(),
                 }, function(data) {
                     if (data[0] == "error") {

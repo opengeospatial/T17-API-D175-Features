@@ -257,6 +257,7 @@
             $(function() {
                 // get collection list
                 $('button#getCollectionItems').bind('click', getCollectionItemsList)
+
             });
 
             /** @function getCollectionItemList 
@@ -639,6 +640,24 @@
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors and <a href="https://novadevs.com">Novadevs</a>'
             }).addTo(map);
+
+            function refreshMap()
+            {
+                polygons = polygons.splice(0,polygons.length);
+                points = points.splice(0,points.length);
+
+                var container = L.DomUtil.get('mapid');
+                container._leaflet_id = null;
+
+                var map = L.map('mapid', {
+                    scrollWheelZoom: false,
+                }).setView([41.651454948560136, -0.8817493915557862], 4);
+                    var tilesFrom = "{{tileserver}}"
+                    L.tileLayer(tilesFrom, {
+                        maxZoom: 19,
+                        attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors and <a href="https://novadevs.com">Novadevs</a>'
+                }).addTo(map);
+            }
         </script>
 
         <!-- Useful links JS -->

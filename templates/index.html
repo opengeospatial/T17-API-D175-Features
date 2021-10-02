@@ -80,7 +80,12 @@
                                 <div class="row form-group">
                                     <div class="col-12">
                                         <label for="collectionId">Feature collection ID*</label>
-                                        <input type="text" name="collectionId" required id="collectionId" class="form-control" value="" placeholder="{{default_collection_id}}">
+                                        <!-- <input type="text" name="collectionId" required id="collectionId" class="form-control" value="" placeholder="{{default_collection_id}}"> -->
+                                        <select name="collectionId" required id="collectionId" class="form-control">
+                                            {%for collection in collections %}
+                                                <option value="{{collection.id}}">{{collection.name}}</option>
+                                            {%endfor%}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row form-group">
@@ -231,6 +236,8 @@
         <!-- Document root -->
         <script>
             $SCRIPT_ROOT = {{request.root_url|tojson|safe}};
+            $COLLECTIONS =  {{collections|tojson|safe}};
+            console.log($COLLECTIONS);
         </script>
 
         <!-- Colletion items JS -->
@@ -266,7 +273,8 @@
              * @returns {JSON}|{boolean}
              */
             function getCollectionItemsList(){
-                var collId = $('input[name="collectionId"]').val();
+                // var collId = $('input[name="collectionId"]').val();
+                var collId = document.getElementById("collectionId").value;
                 if (collId.length == 0) {
                     $('input[name="collectionId"]').addClass('border-danger')
                     $('input[name="collectionId"]').on('input', function(){

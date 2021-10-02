@@ -38,3 +38,21 @@ def get_api_name(landing_page):
         return False
 
     return json_api_response["title"]
+
+
+def get_collections(landing_page):
+    collections = []
+    url = landing_page+'/collections'
+
+    try:
+        api_response = requests.get(url = url, params = {'f':'json'})
+        json_api_response = api_response.json()
+    except requests.ConnectionError as exception:
+        return False
+        
+    for collection in json_api_response["collections"]:
+        element = dict(id=collection["id"], name=collection["title"])
+        collections.append(element)
+        
+
+    return collections

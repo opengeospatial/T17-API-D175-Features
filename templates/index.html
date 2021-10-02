@@ -82,6 +82,7 @@
                                         <label for="collectionId">Feature collection ID*</label>
                                         <!-- <input type="text" name="collectionId" required id="collectionId" class="form-control" value="" placeholder="{{default_collection_id}}"> -->
                                         <select name="collectionId" required id="collectionId" class="form-control">
+                                            <option value=""></option>
                                             {%for collection in collections %}
                                                 <option value="{{collection.id}}">{{collection.name}}</option>
                                             {%endfor%}
@@ -101,17 +102,10 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col-6">
+                                    <div class="col-6" id="queriablesContainer">
                                         <label for="queryableName">Queriable</label>
-                                        <input type="text" name="queryableName" id="queryableName" class="form-control" value="" placeholder="">
-                                        <!-- <select name="queryableName" id="queryableName" class="form-control">
-                                            <option value=""></option>
-                                            <option value="properties">Property name</option>
-                                            <option value="crs">CRS</option>
-                                            <option value="lat">Latitude</option>
-                                            <option value="lon">Longitude</option>
-                                            <option value="radius">Radius</option>
-                                        </select> -->
+                                        <select name="queryableName" id="queryableName" class="form-control">
+                                        </select>
                                     </div>
                                     <div class="col-6">
                                         <label for="queryableValue">Queriable value</label>
@@ -237,6 +231,8 @@
         <script>
             $SCRIPT_ROOT = {{request.root_url|tojson|safe}};
             $COLLECTIONS =  {{collections|tojson|safe}};
+            $QUERIABLES =  {{queriables|tojson|safe}};
+            console.log($QUERIABLES);
             console.log($COLLECTIONS);
         </script>
 
@@ -297,7 +293,7 @@
                     collectionId: collId,
                     l: limit,
                     bbox: bboxVal,
-                    queryableName: $('input[name="queryableName"]').val(),
+                    queryableName: $('#queryableName').val(),
                     queryableValue: $('input[name="queryableValue"]').val(),
                 }, function(data) {
                     if (data[0] == "error") {
@@ -718,6 +714,32 @@
                 $(target).empty().simpleJson({ jsonObject: data });
                 $(modal).modal()
             }
+        </script>
+
+        <!-- Make queriable selector -->
+        <script>
+            document.getElementById('collectionId').addEventListener('change', function(){
+                collection_value = document.getElementById("collectionId").value
+                selected = 0;
+                for (let index = 0; index < $QUERIABLES.length; index++) {
+                    if (collection_value == $QUERIABLES[index].collection_id) {
+                        selected = index
+                    }
+                    
+                }
+                
+                select = document.getElementById('queryableName')
+                // Cleaning selector
+                document.querySelectorAll('#queryableName option').forEach(option => option.remove())
+                //  Populating selector
+                for (var j = 0; j < $QUERIABLES[selected].queriables[0].length; j++) {
+                    var option = document.createElement("option");
+                    option.setAttribute("value", $QUERIABLES[selected].queriables[0][j]);
+                    option.innerHTML =$QUERIABLES[selected].queriables[0][j];
+                    select.appendChild(option);
+                }
+            });
+            
         </script>
     </body>
 </html>

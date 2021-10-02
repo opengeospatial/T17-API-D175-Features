@@ -1,7 +1,7 @@
 import json
 import requests
 from pprint import pprint
-from helpers import get_useful_links, get_api_name, get_collections
+from helpers import get_useful_links, get_api_name, get_collections, get_queriables
 
 from flask import Flask, render_template, request, url_for
 app = Flask(__name__)
@@ -11,6 +11,7 @@ API_BASE_URL = 'http://3.140.17.13:5000/'
 API_NAME = get_api_name(API_BASE_URL)
 USEFUL_LINKS = get_useful_links(API_BASE_URL)
 COLLECTIONS_IN_API = get_collections(API_BASE_URL)
+QUERIABLES_IN_API = get_queriables(API_BASE_URL)
 DEFAULT_LIMIT = 20
 DEFAULT_COLLECTION_ID = "" # I.e. "aerofacp_1m"
 DEFAULT_BBOX = "" # I.e. "-0.489,51.28,0.236,51.686" # LONDON
@@ -31,6 +32,8 @@ def index():
         default_element_id=DEFAULT_ELEMENT_ID,
         tileserver=TILESERVER_URL,
         collections = COLLECTIONS_IN_API,
+        queriables = QUERIABLES_IN_API,
+
     )
 
 @app.route('/collections/<collectionId>/items/', defaults={

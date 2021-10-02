@@ -56,3 +56,44 @@ def get_collections(landing_page):
         
 
     return collections
+
+
+def get_queriables(landing_page):
+    queriables_selector = []
+    collections = []
+    url = landing_page+'/collections'
+
+    # Get collections id
+    try:
+        api_response = requests.get(url = url, params = {'f':'json'})
+        json_api_response = api_response.json()
+    except requests.ConnectionError as exception:
+        return False
+        
+    for collection in json_api_response["collections"]:
+        collections.append(collection["id"])
+
+    # Get queriables for each collection
+    for collection in collections:
+        try:
+            url = landing_page+'/collections/'+collection+'/queryables'
+            api_response = requests.get(url = url, params = {'f':'json'})
+            json_api_response = api_response.json()
+        except requests.ConnectionError as exception:
+            return False
+            
+        group = []
+        aux = []
+
+        for queriable in json_api_response["properties"]:
+            aux.append(queriable)
+
+        group.append(aux)
+        queriables_selector.append(
+            dict(
+                collection_id = collection, 
+                queriables = group
+            )
+        )
+        
+    return queriables_selector

@@ -58,8 +58,8 @@ def get_collections(landing_page):
     return collections
 
 
-def get_queriables(landing_page):
-    queriables_selector = []
+def get_queryables(landing_page):
+    queryables_selector = []
     collections = []
     url = landing_page+'/collections'
 
@@ -73,7 +73,7 @@ def get_queriables(landing_page):
     for collection in json_api_response["collections"]:
         collections.append(collection["id"])
 
-    # Get queriables for each collection
+    # Get queryables for each collection
     for collection in collections:
         try:
             url = landing_page+'/collections/'+collection+'/queryables'
@@ -85,15 +85,15 @@ def get_queriables(landing_page):
         group = []
         aux = []
 
-        for queriable in json_api_response["properties"]:
-            aux.append(queriable)
+        for queryable in json_api_response["properties"]:
+            aux.append(queryable)
 
         group.append(aux)
-        queriables_selector.append(
+        queryables_selector.append(
             dict(
                 collection_id = collection, 
-                queriables = group
+                queryables = group
             )
         )
         
-    return queriables_selector
+    return queryables_selector

@@ -1,7 +1,7 @@
 import json
 import requests
 from pprint import pprint
-from helpers import get_useful_links, get_api_name, get_collections, get_queriables
+from helpers import get_useful_links, get_api_name, get_collections, get_queryables
 
 from flask import Flask, render_template, request, url_for
 app = Flask(__name__)
@@ -11,7 +11,7 @@ API_BASE_URL = 'http://3.140.17.13:5000/'
 API_NAME = get_api_name(API_BASE_URL)
 USEFUL_LINKS = get_useful_links(API_BASE_URL)
 COLLECTIONS_IN_API = get_collections(API_BASE_URL)
-QUERIABLES_IN_API = get_queriables(API_BASE_URL)
+QUERYABLES_IN_API = get_queryables(API_BASE_URL)
 DEFAULT_LIMIT = 20
 DEFAULT_COLLECTION_ID = "" # I.e. "aerofacp_1m"
 DEFAULT_BBOX = "" # I.e. "-0.489,51.28,0.236,51.686" # LONDON
@@ -32,7 +32,7 @@ def index():
         default_element_id=DEFAULT_ELEMENT_ID,
         tileserver=TILESERVER_URL,
         collections = COLLECTIONS_IN_API,
-        queriables = QUERIABLES_IN_API,
+        queryables = QUERYABLES_IN_API,
 
     )
 
@@ -64,7 +64,7 @@ def get_features(collectionId, l, bbox):
         'limit':limitParam,
     }
 
-    # Accepted queriables:
+    # Accepted queryables:
     # bbox list[float] | Only features that have a geometry that intersects the bounding box are selected. The bounding box is provided as four or six numbers, depending on whether the coordinate reference system includes a vertical axis (elevation or depth): * Lower left corner, coordinate axis 1 * Lower left corner, coordinate axis 2 * Lower left corner, coordinate axis 3 (optional) * Upper right corner, coordinate axis 1 * Upper right corner, coordinate axis 2 * Upper right corner, coordinate axis 3 (optional) The coordinate reference system of the values is WGS84 longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84) unless a different coordinate reference system is specified in the parameter `bbox-crs`. For WGS84 longitude/latitude the values are in most cases the sequence of minimum longitude, minimum latitude, maximum longitude and maximum latitude. However, in cases where the box spans the antimeridian the first value (west-most box edge) is larger than the third value (east-most box edge). If a feature has multiple spatial geometry properties, it is the decision of the server whether only a single spatial geometry property is used to determine the extent or all relevant geometries. (optional)
     # property_name = 'property_name_example' # str | A list of feature properties to include in the response.  For some output formats, such as XML that can be validate against a formal schema, this list represents the optional properties to include in the response. (optional)
     # crs = 'http://www.opengis.net/def/crs/epsg/0/4326' # str | Asserts the CRS to use for encoding features in the response document. (optional)

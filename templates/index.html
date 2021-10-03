@@ -102,13 +102,13 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col-6" id="queriablesContainer">
-                                        <label for="queryableName">Queriable</label>
+                                    <div class="col-6" id="queryablesContainer">
+                                        <label for="queryableName">Queryable</label>
                                         <select name="queryableName" id="queryableName" class="form-control">
                                         </select>
                                     </div>
                                     <div class="col-6">
-                                        <label for="queryableValue">Queriable value</label>
+                                        <label for="queryableValue">Queryable value</label>
                                         <input ype="text" name="queryableValue" id="queryableValue" class="form-control" value="" placeholder="">
                                     </div>
                                 </div>
@@ -231,8 +231,8 @@
         <script>
             $SCRIPT_ROOT = {{request.root_url|tojson|safe}};
             $COLLECTIONS =  {{collections|tojson|safe}};
-            $QUERIABLES =  {{queriables|tojson|safe}};
-            console.log($QUERIABLES);
+            $QUERYABLES =  {{queryables|tojson|safe}};
+            console.log($QUERYABLES);
             console.log($COLLECTIONS);
         </script>
 
@@ -716,13 +716,13 @@
             }
         </script>
 
-        <!-- Make queriable selector -->
+        <!-- Make queryable selector -->
         <script>
             document.getElementById('collectionId').addEventListener('change', function(){
                 collection_value = document.getElementById("collectionId").value
                 selected = 0;
-                for (let index = 0; index < $QUERIABLES.length; index++) {
-                    if (collection_value == $QUERIABLES[index].collection_id) {
+                for (let index = 0; index < $QUERYABLES.length; index++) {
+                    if (collection_value == $QUERYABLES[index].collection_id) {
                         selected = index
                     }
                     
@@ -732,10 +732,10 @@
                 // Cleaning selector
                 document.querySelectorAll('#queryableName option').forEach(option => option.remove())
                 //  Populating selector
-                for (var j = 0; j < $QUERIABLES[selected].queriables[0].length; j++) {
+                for (var j = 0; j < $QUERYABLES[selected].queryables[0].length; j++) {
                     var option = document.createElement("option");
-                    option.setAttribute("value", $QUERIABLES[selected].queriables[0][j]);
-                    option.innerHTML =$QUERIABLES[selected].queriables[0][j];
+                    option.setAttribute("value", $QUERYABLES[selected].queryables[0][j]);
+                    option.innerHTML =$QUERYABLES[selected].queryables[0][j];
                     select.appendChild(option);
                 }
             });

@@ -261,6 +261,12 @@
              * @type {array}
              */
             var points = [];
+            /**
+             * The LineStrings ready to be rendered.
+             * 
+             * @type {array}
+             */
+            var lineStrings = [];
 
             $(function() {
                 // get collection list
@@ -355,6 +361,15 @@
                                 id: element.id,
                             }
                             points.push(obj);
+
+                        case "LineString":
+                            var obj = {
+                                type: element.geometry.type,
+                                coordinates: element.geometry.coordinates,
+                                properties: element.properties,
+                                id: element.id,
+                            }
+                            lineStrings.push(obj);
                     
                         default:
                             break;
@@ -435,6 +450,34 @@
                     // Fly to the point center
                     map.flyTo(pt.getBounds().getCenter(), 9);
                 });
+                // Render lineStrings
+                lineStrings.forEach(function(lineString) {
+                    // TODO: Why do we need to reverse the coordinates array?
+                    // Reverse the corrdinates 
+                    // (FIXME)
+                    var coordinates = [];
+                    lineString.coordinates.forEach(function(coordinatesPair) {
+                        var aux = [coordinatesPair[1], coordinatesPair[0]];
+                        coordinates.push(aux);
+                    });
+                    // (ENDFIXME)
+                    // Add to map custom lineStrings
+                    var ls = L.polyline(coordinates).addTo(map);
+                    // Add tooltip to the polygon
+                    var content = '<h4>'+lineString.id+' properties:</h4>';
+                    var counter = 0;
+                    for(var key in lineString.properties) {
+                        if(lineString.properties.hasOwnProperty(key) && counter < 5) {
+                            content += '<p>'+key+':'+lineString.properties[key]+'<p>';
+                            counter++;
+                        }
+                    }
+                    ls.bindTooltip(content).addTo(map);
+                    // Get the lineString center
+                    var center = ls.getCenter();
+                    // Fly to the lineString center
+                    map.flyTo([center.lat, center.lng], 3);
+                });
             }
         </script>
 
@@ -458,14 +501,20 @@
              * @type {array}
              */
             var points = [];
+            /**
+             * The LineStrings ready to be rendered.
+             * 
+             * @type {array}
+             */
+             var lineStrings = [];
 
             $(function() {
                 // get collection list
                 $('button#getCollectionItem').bind('click', getCollectionItem)
             });
 
-            /** @function getCollectionItemList 
-             * Do an AJAX call to get all the items that are part of a given collection.
+            /** @function getCollectionItemL
+             * Do an AJAX call to get the one item by Id that is part of a given collection.
              *
              * @returns {JSON}|{boolean}
              */
@@ -506,10 +555,10 @@
                     } else {
                         /** @function showJSONOutput */
                         showJSONOutput(data, "#result-item");
-                        /** @function saveObjects */
+                        /** @function saveObject */
                         saveObject(data);
-                        /** @function renderObjects */
-                        renderObjects();
+                        /** @function renderObject */
+                        renderObject();
                         return data;
                     }
                 }).done(function (data) {
@@ -554,6 +603,15 @@
                                 id: data.id,
                             }
                             points.push(obj);
+
+                        case "LineStrings":
+                            var obj = {
+                                type: data.geometry.type,
+                                coordinates: data.geometry.coordinates,
+                                properties: data.properties,
+                                id: data.id,
+                            }
+                            lineStrings.push(obj);
                     
                         default:
                             break;
@@ -572,12 +630,12 @@
                 $(target).empty().simpleJson({ jsonObject: data });
             }
 
-            /** @function renderObjects 
+            /** @function renderObjects
              * Renders each stored object into the map
              * 
              * @returns {void}
              */
-            function renderObjects() {
+            function renderObject() {
                 // Render polygons
                 polygons.forEach(function(polygon) {
                     // Add to map custom polygons
@@ -632,6 +690,34 @@
                     pt.bindTooltip(content).addTo(map);
                     // Fly to the point center
                     map.flyTo(pt.getBounds().getCenter(), 9);
+                });
+                // Render lineStrings
+                lineStrings.forEach(function(lineString) {
+                    // TODO: Why do we need to reverse the coordinates array?
+                    // Reverse the corrdinates 
+                    // (FIXME)
+                    var coordinates = [];
+                    lineString.coordinates.forEach(function(coordinatesPair) {
+                        var aux = [coordinatesPair[1], coordinatesPair[0]];
+                        coordinates.push(aux);
+                    });
+                    // (ENDFIXME)
+                    // Add to map custom lineStrings
+                    var ls = L.polyline(coordinates).addTo(map);
+                    // Add tooltip to the polygon
+                    var content = '<h4>'+lineString.id+' properties:</h4>';
+                    var counter = 0;
+                    for(var key in lineString.properties) {
+                        if(lineString.properties.hasOwnProperty(key) && counter < 5) {
+                            content += '<p>'+key+':'+lineString.properties[key]+'<p>';
+                            counter++;
+                        }
+                    }
+                    ls.bindTooltip(content).addTo(map);
+                    // Get the lineString center
+                    var center = ls.getCenter();
+                    // Fly to the lineString center
+                    map.flyTo([center.lat, center.lng], 3);
                 });
             }
         </script>

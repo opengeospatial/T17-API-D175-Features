@@ -21,7 +21,7 @@ def get_useful_links(landing_page):
         if (link["rel"] == "service-desc"):
             links.append((link["href"], "Definition"))
         
-        if (link["rel"] == "http://www.opengis.net/def/rel/ogc/1.0/conformance"):
+        if (link["rel"] == "conformance"):
             links.append((link["href"], "Conformance"))
         
         if (link["rel"] == "data"):

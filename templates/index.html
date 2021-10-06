@@ -129,7 +129,12 @@
                             <div class="row form-group">
                                 <div class="col-12">
                                     <label for="collectionIdFilter">Feature collection ID*</label>
-                                    <input type="text" name="collectionIdFilter" required id="collectionIdFilter" class="form-control" value="" placeholder="{{default_collection_id}}">
+                                    <select name="collectionIdFilter" required id="collectionIdFilter" class="form-control">
+                                        <option value=""></option>
+                                        {%for collection in collections %}
+                                            <option value="{{collection.id}}">{{collection.name}}</option>
+                                        {%endfor%}
+                                    </select>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -272,8 +277,8 @@
                 // var collId = $('input[name="collectionId"]').val();
                 var collId = document.getElementById("collectionId").value;
                 if (collId.length == 0) {
-                    $('input[name="collectionId"]').addClass('border-danger')
-                    $('input[name="collectionId"]').on('input', function(){
+                    $('#collectionId').addClass('border-danger')
+                    $('#collectionId').on('change', function(){
                         $(this).removeClass('border-danger')
                     });
                     return false;
@@ -465,10 +470,10 @@
              * @returns {JSON}|{boolean}
              */
             function getCollectionItem(){
-                var collId = $('input[name="collectionIdFilter"]').val();
+                var collId = $('#collectionIdFilter').val();
                 if (collId.length == 0) {
-                    $('input[name="collectionIdFilter"]').addClass('border-danger')
-                    $('input[name="collectionIdFilter"]').on('input', function(){
+                    $('#collectionIdFilter').addClass('border-danger')
+                    $('#collectionIdFilter').on('change', function(){
                         $(this).removeClass('border-danger')
                     });
                     return false;
@@ -642,7 +647,7 @@
             var tilesFrom = "{{tileserver}}"
             L.tileLayer(tilesFrom, {
                 maxZoom: 19,
-                attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors and <a href="https://novadevs.com">Novadevs</a>'
+                attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors and <a href="https://skymantics.com">Skymantics</a>'
             }).addTo(map);
 
             function refreshMap()
@@ -727,7 +732,7 @@
                     }
                     
                 }
-                
+
                 select = document.getElementById('queryableName')
                 // Cleaning selector
                 document.querySelectorAll('#queryableName option').forEach(option => option.remove())

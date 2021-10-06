@@ -361,6 +361,7 @@
                                 id: element.id,
                             }
                             points.push(obj);
+                            break;
 
                         case "LineString":
                             var obj = {
@@ -370,6 +371,7 @@
                                 id: element.id,
                             }
                             lineStrings.push(obj);
+                            break;
                     
                         default:
                             break;
@@ -506,7 +508,7 @@
              * 
              * @type {array}
              */
-             var lineStrings = [];
+            var lineStrings = [];
 
             $(function() {
                 // get collection list
@@ -603,6 +605,7 @@
                                 id: data.id,
                             }
                             points.push(obj);
+                            break;
 
                         case "LineStrings":
                             var obj = {
@@ -612,6 +615,7 @@
                                 id: data.id,
                             }
                             lineStrings.push(obj);
+                            break;
                     
                         default:
                             break;
@@ -680,7 +684,6 @@
                     // Add tooltip to the point
                     var content = '<h4>'+point.id+' properties:</h4>';
                     var counter = 0;
-                    console.log(point);
                     for(var key in point.properties) {
                         if(point.properties.hasOwnProperty(key) && counter < 5) {
                             content += '<p>'+key+':'+point.properties[key]+'<p>';

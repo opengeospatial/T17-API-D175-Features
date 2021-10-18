@@ -237,8 +237,7 @@
             $SCRIPT_ROOT = {{request.root_url|tojson|safe}};
             $COLLECTIONS =  {{collections|tojson|safe}};
             $QUERYABLES =  {{queryables|tojson|safe}};
-            console.log($QUERYABLES);
-            console.log($COLLECTIONS);
+            var map;
         </script>
 
         <!-- Colletion items JS -->
@@ -280,6 +279,7 @@
              * @returns {JSON}|{boolean}
              */
             function getCollectionItemsList(){
+                refreshMap();
                 // var collId = $('input[name="collectionId"]').val();
                 var collId = document.getElementById("collectionId").value;
                 if (collId.length == 0) {
@@ -485,31 +485,6 @@
 
         <!-- Colletion item JS -->
         <script>
-            /**
-             * The lines ready to be rendered.
-             *
-             * @type {array}
-             */
-            var lines = [];
-            /**
-             * The polygons ready to be rendered.
-             *
-             * @type {array}
-             */
-            var polygons = [];
-            /**
-             * The points ready to be rendered.
-             *
-             * @type {array}
-             */
-            var points = [];
-            /**
-             * The LineStrings ready to be rendered.
-             * 
-             * @type {array}
-             */
-            var lineStrings = [];
-
             $(function() {
                 // get collection list
                 $('button#getCollectionItem').bind('click', getCollectionItem)
@@ -521,6 +496,7 @@
              * @returns {JSON}|{boolean}
              */
             function getCollectionItem(){
+                refreshMap();
                 var collId = $('#collectionIdFilter').val();
                 if (collId.length == 0) {
                     $('#collectionIdFilter').addClass('border-danger')
@@ -741,19 +717,27 @@
 
             function refreshMap()
             {
-                polygons = polygons.splice(0,polygons.length);
-                points = points.splice(0,points.length);
+                map.eachLayer(function(point){
+                    map.remove();
+                    map.removeLayer(point)
+                    latlngs = [];
+                    isMap = false;
+                    loadMap();
+                    points = [];
+                    lineStrings = [];
+                    polygons = [];
+                });
+            }
 
-                var container = L.DomUtil.get('mapid');
-                container._leaflet_id = null;
-
-                var map = L.map('mapid', {
+            function loadMap() {
+                // Set map center and block zoom
+                map = L.map('mapid', {
                     scrollWheelZoom: false,
                 }).setView([41.651454948560136, -0.8817493915557862], 4);
-                    var tilesFrom = "{{tileserver}}"
-                    L.tileLayer(tilesFrom, {
-                        maxZoom: 19,
-                        attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors and <a href="https://novadevs.com">Novadevs</a>'
+                var tilesFrom = "{{tileserver}}"
+                L.tileLayer(tilesFrom, {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors and <a href="https://skymantics.com">Skymantics</a>'
                 }).addTo(map);
             }
         </script>

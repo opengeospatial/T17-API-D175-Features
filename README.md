@@ -1,4 +1,4 @@
-# T17-API-D175: generic OGC API - Features client
+# T17-API-D175: OGC API - Features client
 
 ## Installation
 

@@ -18,6 +18,7 @@ DEFAULT_BBOX = "" # I.e. "-0.489,51.28,0.236,51.686" # LONDON
 DEFAULT_ELEMENT_ID = "" # I.e.  "CWFID.AEROFACP_1M.5212.5610.7AEB8DB2246327DC1F20020000" # HEATHROW
 TILESERVER_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
 DEFAULT_ZOOM = 12
+DEFAULT_CENTER = [0,0]
 
 @app.route('/')
 def index():
@@ -34,8 +35,8 @@ def index():
         tileserver=TILESERVER_URL,
         collections = COLLECTIONS_IN_API,
         queryables = QUERYABLES_IN_API,
-        zoom=DEFAULT_ZOOM
-
+        zoom=DEFAULT_ZOOM,
+        center=DEFAULT_CENTER
     )
 
 @app.route('/collections/<collectionId>/items/', defaults={

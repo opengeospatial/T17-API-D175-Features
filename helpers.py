@@ -75,6 +75,7 @@ def get_queryables(landing_page):
 
     # Get queryables for each collection
     for collection in collections:
+        pprint('Read properties of '+collection)
         try:
             url = landing_page+'/collections/'+collection+'/queryables'
             api_response = requests.get(url = url, params = {'f':'json'})
@@ -82,18 +83,19 @@ def get_queryables(landing_page):
         except requests.ConnectionError as exception:
             return False
             
-        group = []
-        aux = []
+        if json_api_response.__contains__("properties"):
+            group = []
+            aux = []
 
-        for queryable in json_api_response["properties"]:
-            aux.append(queryable)
+            for queryable in json_api_response["properties"]:
+                aux.append(queryable)
 
-        group.append(aux)
-        queryables_selector.append(
-            dict(
-                collection_id = collection, 
-                queryables = group
+            group.append(aux)
+            queryables_selector.append(
+                dict(
+                    collection_id = collection, 
+                    queryables = group
+                )
             )
-        )
-        
+
     return queryables_selector

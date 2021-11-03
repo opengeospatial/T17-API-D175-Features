@@ -401,12 +401,14 @@
             function renderObjects() {
                 // Render polygons
                 polygons.forEach(function(polygon) {
-                    // Add to map custom polygons
-                    var pol = L.polygon(polygon.coordinates, {
-                        weight: 1,
-                        fillOpacity: 0.7,
-                        color: 'red',
-                        dashArray: '3'
+                    // Add to map GeoJSON custom polygons
+                    var polAsGeoJSON = L.geoJSON(polygon, {
+                        style: {
+                            weight: 1,
+                            fillOpacity: 0.7,
+                            color: 'red',
+                            dashArray: '3'
+                        }
                     }).addTo(map);
                     // Add tooltip to the polygon
                     var content = '<h4>'+polygon.id+' properties:</h4>';
@@ -417,9 +419,9 @@
                             counter++;
                         }
                     }
-                    pol.bindTooltip(content).addTo(map);
+                    polAsGeoJSON.bindTooltip(content).addTo(map);
                     // Get the polygon center
-                    var center = pol.getCenter();
+                    var center = polAsGeoJSON.getBounds().getCenter();
                     // Fly to the polygon center
                     map.flyTo([center.lat, center.lng], 9);
                 });
@@ -456,7 +458,7 @@
                 });
                 // Render lineStrings
                 lineStrings.forEach(function(lineString) {
-                    // TODO: Why do we need to reverse the coordinates array?
+                    // TODO: Why do we need to reverse the coordinates array? Because we need to use long,lat instead of lat,long
                     // Reverse the corrdinates 
                     // (FIXME)
                     var coordinates = [];
@@ -620,12 +622,14 @@
             function renderObject() {
                 // Render polygons
                 polygons.forEach(function(polygon) {
-                    // Add to map custom polygons
-                    var pol = L.polygon(polygon.coordinates, {
-                        weight: 1,
-                        fillOpacity: 0.7,
-                        color: 'red',
-                        dashArray: '3'
+                    // Add to map GeoJSON custom polygons
+                    var polAsGeoJSON = L.geoJSON(polygon, {
+                        style: {
+                            weight: 1,
+                            fillOpacity: 0.7,
+                            color: 'red',
+                            dashArray: '3'
+                        }
                     }).addTo(map);
                     // Add tooltip to the polygon
                     var content = '<h4>'+polygon.id+' properties:</h4>';
@@ -636,9 +640,9 @@
                             counter++;
                         }
                     }
-                    pol.bindTooltip(content).addTo(map);
+                    polAsGeoJSON.bindTooltip(content).addTo(map);
                     // Get the polygon center
-                    var center = pol.getCenter();
+                    var center = polAsGeoJSON.getBounds().getCenter();
                     // Fly to the polygon center
                     map.flyTo([center.lat, center.lng], 9);
                 });
@@ -708,9 +712,8 @@
             // Set map center and block zoom
             var map = L.map('mapid', {
                 scrollWheelZoom: false,
-            }).setView($DEFAULT_CENTER, $SCRIPT_ZOOM);
-            // Get map tiles from localhost or OSM
-            // L.tileLayer('http://3.143.92.80/tileserver/{z}/{x}/{y}.png', {
+                // This is just a workaround to be used with long,lat instead of lat,long
+            }).setView([$DEFAULT_CENTER[1], $DEFAULT_CENTER[0]], $SCRIPT_ZOOM);
             var tilesFrom = "{{tileserver}}"
             L.tileLayer(tilesFrom, {
                 maxZoom: 19,
@@ -735,7 +738,8 @@
                 // Set map center and block zoom
                 map = L.map('mapid', {
                     scrollWheelZoom: false,
-                }).setView($DEFAULT_CENTER, $SCRIPT_ZOOM);
+                    // This is just a workaround to be used with long,lat instead of lat,long
+                }).setView([$DEFAULT_CENTER[1], $DEFAULT_CENTER[0]], $SCRIPT_ZOOM);
                 var tilesFrom = "{{tileserver}}"
                 L.tileLayer(tilesFrom, {
                     maxZoom: 19,
@@ -812,11 +816,13 @@
                 // Cleaning selector
                 document.querySelectorAll('#queryableName option').forEach(option => option.remove())
                 //  Populating selector
-                for (var j = 0; j < $QUERYABLES[selected].queryables[0].length; j++) {
-                    var option = document.createElement("option");
-                    option.setAttribute("value", $QUERYABLES[selected].queryables[0][j]);
-                    option.innerHTML =$QUERYABLES[selected].queryables[0][j];
-                    select.appendChild(option);
+                if ($QUERYABLES.length > 0) {
+                    for (var j = 0; j < $QUERYABLES[selected].queryables[0].length; j++) {
+                        var option = document.createElement("option");
+                        option.setAttribute("value", $QUERYABLES[selected].queryables[0][j]);
+                        option.innerHTML =$QUERYABLES[selected].queryables[0][j];
+                        select.appendChild(option);
+                    }
                 }
             });
             

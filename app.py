@@ -6,7 +6,7 @@ from helpers import get_useful_links, get_api_name, get_collections, get_queryab
 from flask import Flask, render_template, request, url_for
 app = Flask(__name__)
 
-API_BASE_URL = 'http://3.140.17.13:5000/'
+API_BASE_URL = "https://dp21.skymantics.com/routes-analysis"
 
 API_NAME = get_api_name(API_BASE_URL)
 USEFUL_LINKS = get_useful_links(API_BASE_URL)
@@ -16,9 +16,9 @@ DEFAULT_LIMIT = 20
 DEFAULT_COLLECTION_ID = "" # I.e. "aerofacp_1m"
 DEFAULT_BBOX = "" # I.e. "-0.489,51.28,0.236,51.686" # LONDON
 DEFAULT_ELEMENT_ID = "" # I.e.  "CWFID.AEROFACP_1M.5212.5610.7AEB8DB2246327DC1F20020000" # HEATHROW
-TILESERVER_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
-DEFAULT_ZOOM = 12
-DEFAULT_CENTER = [0,0]
+TILESERVER_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+DEFAULT_ZOOM = "0"
+DEFAULT_CENTER = "[0,0]"
 
 @app.route('/')
 def index():
@@ -59,6 +59,11 @@ def get_features(collectionId, l, bbox):
     collection_id = collectionIdArg
     # Set the API resource url
     URL = API_BASE_URL+"/collections/"+collection_id+"/items"
+    
+    # Set the accept headers
+    HEADERS = requests.structures.CaseInsensitiveDict()
+    HEADERS["Accept"] = "application/json"
+
     f = "json" # str | A MIME type indicating the representation of the resources to be presented (e.g. application/gml+xml; version=3.2 for GML 3.2). (optional)
     limitParam = limitArg # int | The optional limit parameter limits the number of items that are presented in the response document.  Only items are counted that are on the first level of the collection in the response document. Nested objects contained within the explicitly requested items shall not be counted. (optional) (default to 10)
     # defining a params dict for the parameters to be sent to the API
@@ -83,7 +88,7 @@ def get_features(collectionId, l, bbox):
         PARAMS[name] = value
 
     # sending get request and saving the response as response object
-    api_response = requests.get(url = URL, params = PARAMS)
+    api_response = requests.get(url = URL, headers = HEADERS, params = PARAMS)
     # extracting data in json format
     json_api_response = api_response.json()
     # Looking for exceptions
@@ -121,6 +126,10 @@ def get_feature(collectionId, itemId, bbox):
     # bbox = [3.4] # list[float] | Only features that have a geometry that intersects the bounding box are selected. The bounding box is provided as four or six numbers, depending on whether the coordinate reference system includes a vertical axis (elevation or depth): * Lower left corner, coordinate axis 1 * Lower left corner, coordinate axis 2 * Lower left corner, coordinate axis 3 (optional) * Upper right corner, coordinate axis 1 * Upper right corner, coordinate axis 2 * Upper right corner, coordinate axis 3 (optional) The coordinate reference system of the values is WGS84 longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84) unless a different coordinate reference system is specified in the parameter `bbox-crs`. For WGS84 longitude/latitude the values are in most cases the sequence of minimum longitude, minimum latitude, maximum longitude and maximum latitude. However, in cases where the box spans the antimeridian the first value (west-most box edge) is larger than the third value (east-most box edge). If a feature has multiple spatial geometry properties, it is the decision of the server whether only a single spatial geometry property is used to determine the extent or all relevant geometries. (optional)
     # Set the API resource url
     URL = API_BASE_URL+"/collections/"+collection_id+"/items/"+item_id
+    # Set the accept headers
+    HEADERS = requests.structures.CaseInsensitiveDict()
+    HEADERS["Accept"] = "application/json"
+
     f = "json" # str | A MIME type indicating the representation of the resources to be presented (e.g. application/gml+xml; version=3.2 for GML 3.2). (optional)
     # defining a params dict for the parameters to be sent to the API
     PARAMS = {
@@ -131,7 +140,7 @@ def get_feature(collectionId, itemId, bbox):
         PARAMS['bbox'] = request.args.get('bbox') # list[float] | Only features that have a geometry that intersects the bounding box are selected. The bounding box is provided as four or six numbers, depending on whether the coordinate reference system includes a vertical axis (elevation or depth): * Lower left corner, coordinate axis 1 * Lower left corner, coordinate axis 2 * Lower left corner, coordinate axis 3 (optional) * Upper right corner, coordinate axis 1 * Upper right corner, coordinate axis 2 * Upper right corner, coordinate axis 3 (optional) The coordinate reference system of the values is WGS84 longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84) unless a different coordinate reference system is specified in the parameter `bbox-crs`. For WGS84 longitude/latitude the values are in most cases the sequence of minimum longitude, minimum latitude, maximum longitude and maximum latitude. However, in cases where the box spans the antimeridian the first value (west-most box edge) is larger than the third value (east-most box edge). If a feature has multiple spatial geometry properties, it is the decision of the server whether only a single spatial geometry property is used to determine the extent or all relevant geometries. (optional)
     
     # sending get request and saving the response as response object
-    api_response = requests.get(url = URL, params = PARAMS)
+    api_response = requests.get(url = URL, headers = HEADERS, params = PARAMS)
     # extracting data in json format
     json_api_response = api_response.json()
     # Looking for exceptions
